@@ -1,3 +1,4 @@
+import logging
 import os
 import os.path as opath
 from .netascii import Netascii
@@ -7,11 +8,12 @@ def sanitize_fname(fname):
     """
     Ensures that fname is a path under the current working directory.
     """
-    root_dir = os.getcwd()
-    return opath.join(
-        bytes(root_dir, encoding='ascii'),
-        opath.normpath(
-            b'/' + fname).lstrip(b'/'))
+    return fname.decode('ASCII')
+    # root_dir = os.getcwd()
+    # return opath.join(
+    #     bytes(root_dir, encoding='ascii'),
+    #     opath.normpath(
+    #         b'/' + fname).lstrip(b'/'))
 
 
 class FileReader(object):
@@ -56,6 +58,59 @@ class FileReader(object):
     def __del__(self):
         if self._f and not self._f.closed:
             self._f.close()
+
+
+class OberonFileReader(FileReader):
+    """
+    A file reader which looks for files in the Oberon file hierarchy
+    """
+
+    OBERON_LIBS_DIR = 'Oberon/Lib'
+    TOP_DIR = 'Oberon'
+
+    def __init__(self, files_dir, *args, **kwargs):
+        self.log = logging.getLogger('OberonFileReader')
+        self.log.setLevel(logging.INFO)
+        self._files_dir = files_dir
+        super().__init__(*args, **kwargs)
+        self._current_dir = self._files_dir
+
+    def _open_file(self):
+        """Looks for file and opens it"""
+        self._current_dir = self._files_dir
+
+        # looking in files_dir then in all parent dirs until Oberon
+        while not self._is_top_dir():
+            self.log.debug('looking for {} in {}'.format(self.fname, self._current_dir))
+            if self._file_exists_in_current_dir():
+                self.log.info('Transferring {}'.format(self._current_file_path()))
+                return open(self._current_file_path(), 'rb')
+            else:
+                self._go_to_parent_dir()
+
+        # looking in special directories
+        self._current_dir = os.path.join(self._files_dir, self.OBERON_LIBS_DIR)
+        if self._file_exists_in_current_dir():
+            self.log.debug('looking for {} in {}'.format(self.fname, self._current_dir))
+            return open(self._current_file_path())
+        else:
+            self.log.debug('{} not found'.format(self._current_file_path()))
+            # file not found, we try to open it, which will raise a file not found error
+            open(os.path.join(self._files_dir, self.fname), 'rb')
+
+    def _go_to_parent_dir(self):
+        """ Goes up a directory """
+        self._current_dir = os.path.abspath(os.path.dirname(self._current_dir))
+
+    def _is_top_dir(self):
+        """ Returns True if we are in the top directory """
+        return os.path.basename(self._current_dir) == self.TOP_DIR
+
+    def _current_file_path(self):
+        return os.path.join(self._current_dir, self.fname)
+
+    def _file_exists_in_current_dir(self):
+        return os.path.isfile(self._current_file_path())
 
 
 class FileWriter(object):

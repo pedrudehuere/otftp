@@ -10,6 +10,7 @@ as well as parse filenames.
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
 
 
 def validate_req(fname, mode, opts, supported_opts=None, default_opts=None):

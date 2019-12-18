@@ -33,8 +33,7 @@ class Netascii:
         buffer_size = 0
         if self._buffer:
             buffer_size = len(self._buffer)
-        data = self._buffer + self.to_netascii(
-            self._reader.read(size - buffer_size))
+        data = self._buffer + self.to_netascii(self._reader.read(size - buffer_size))
         self._buffer = data[size:]
         return data[:size]
 

@@ -8,6 +8,7 @@ from py3tftp.tftp_packet import TFTPPacketFactory
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
 
 
 class BaseTFTPProtocol(asyncio.DatagramProtocol):
@@ -432,3 +433,16 @@ class TFTPServerProtocol(BaseTFTPServerProtocol):
         else:
             return lambda filename, opts: file_io.FileReader(
                 filename, opts, packet.mode)
+
+
+class OberonTFTPServerProtocol(TFTPServerProtocol):
+    def __init__(self, files_dir, *args, **kwargs):
+        self.files_dir = files_dir
+        super().__init__(*args, **kwargs)
+
+    def select_file_handler(self, packet):
+        if packet.is_wrq():
+            raise NotImplementedError("Oberon TFTP server does not support write requests")
+        else:
+            return lambda filename, opts: file_io.OberonFileReader(
+                self.files_dir, filename, opts, packet.mode)

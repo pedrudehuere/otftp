@@ -11,6 +11,7 @@ Copyright 2016 Matt O. <matt@mattscodecave.com>
 
 logging_config = {
     'format': '%(asctime)s [%(levelname)s] %(message)s',
+    'datefmt': '%Y-%m-%d',
     'level': logging.INFO,
     'filename': None
 }
@@ -52,6 +53,9 @@ def parse_cli_arguments():
                         action='store_true',
                         help='Enable debug-level logging.')
     parser.add_argument('--version', action='store_true')
+
+    parser.add_argument('--files-dir',
+                        help='Directory where files are read/written')
 
     args = parser.parse_args()
 

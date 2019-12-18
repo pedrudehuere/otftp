@@ -1,8 +1,8 @@
 import logging
 import asyncio
 
-from .protocols import TFTPServerProtocol
-from .cli_parser import parse_cli_arguments
+from protocols import OberonTFTPServerProtocol
+from cli_parser import parse_cli_arguments
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     loop = asyncio.get_event_loop()
 
     listen = loop.create_datagram_endpoint(
-        lambda: TFTPServerProtocol(args.host, loop, timeouts),
+        lambda: OberonTFTPServerProtocol(args.files_dir, args.host, loop, timeouts),
         local_addr=(args.host, args.port,))
 
     transport, protocol = loop.run_until_complete(listen)
