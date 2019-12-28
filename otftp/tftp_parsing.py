@@ -1,6 +1,6 @@
 import logging
 
-from py3tftp.exceptions import BadRequest, UnacknowledgedOption
+from otftpd.exceptions import BadRequest, UnacknowledgedOption
 
 
 """

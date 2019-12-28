@@ -72,13 +72,22 @@ class OberonFileReader(FileReader):
         self.log = logging.getLogger('OberonFileReader')
         self.log.setLevel(logging.INFO)
         self._files_dir = files_dir
+        # we check if the files directory is under 'Oberon'
+        self._is_under_oberon_dir = self.TOP_DIR in self._files_dir.split(os.pathsep)
         super().__init__(*args, **kwargs)
         self._current_dir = self._files_dir
 
     def _open_file(self):
         """Looks for file and opens it"""
         self._current_dir = self._files_dir
+        if self._is_under_oberon_dir:
+            return self._open_file_under_oberon_dir()
+        else:
+            res =  open(self._current_file_path(), 'rb')
+            self.log.info('Transferring {}'.format(self._current_file_path()))
+            return res
 
+    def _open_file_under_oberon_dir(self):
         # looking in files_dir then in all parent dirs until Oberon
         while not self._is_top_dir():
             self.log.debug('looking for {} in {}'.format(self.fname, self._current_dir))

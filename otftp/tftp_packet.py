@@ -1,5 +1,5 @@
-from py3tftp import tftp_parsing
-from py3tftp.exceptions import BadPacketType
+from otftpd import tftp_parsing
+from otftpd.exceptions import BadPacketType
 
 
 class TFTPPacketFactory(object):
