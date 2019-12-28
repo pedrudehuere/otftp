@@ -6,8 +6,8 @@ This project is a fork of  [https://github.com/sirMackk/py3tftp][2] version 1.2.
 ### Installation
 
 ```
-git clone https://github.com/pedrudehuere/otftpd.git
-pip install otftpd
+git clone https://github.com/pedrudehuere/otftp.git
+pip install otftp
 ```
 
 ### Usage
