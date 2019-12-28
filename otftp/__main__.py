@@ -1,8 +1,8 @@
 import logging
 import asyncio
 
-from otftpd.protocols import OberonTFTPServerProtocol
-from otftpd.cli_parser import parse_cli_arguments
+from otftp.protocols import OberonTFTPServerProtocol
+from otftp.cli_parser import parse_cli_arguments
 
 
 def main():

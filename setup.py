@@ -1,37 +1,25 @@
 from setuptools import setup
-from py3tftp import __version__
-
-try:
-    import pypandoc
-except ImportError:
-    pypandoc = None
+from otftp import __version__
 
 
-def readme():
-    with open('README.md', 'r') as f:
-        readme_md = f.read()
-        if pypandoc:
-            readme_rst = pypandoc.convert(readme_md, 'rst', format='md')
-            return readme_rst
-        else:
-            return readme_md
-
+description = 'Python 3 asynchronous TFTP server for Oberon'
+long_description = description
 
 setup(
-    name='py3tftp',
+    name='otftp',
     version=__version__,
-    description='Python 3 asynchronous TFTP server.',
-    long_description=readme(),
-    url='http://github.com/sirMackk/py3tftp',
-    author='Matt O.',
-    author_email='matt@mattscodecave.com',
+    description=description,
+    long_description=long_description,
+    url='https://github.com/pedrudehuere/otftpd',
+    author='ap',
+    author_email='miao@miao.bau',
     license='MIT',
-    keywords='async asynchronous tftp',
-    packages=['py3tftp'],
+    keywords='async asynchronous tftp Oberon',
+    packages=['otftp'],
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'py3tftp = py3tftp.__main__:main'
+            'otftp = otftp.__main__:main'
         ]
     },
     classifiers=[

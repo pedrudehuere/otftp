@@ -1,20 +1,13 @@
 # Py3tftp
 
-Py3tftp is an asynchronous [TFTP][1] server written in Python 3.5. It was written for the pure joy of working with Python 3 and implements [RFC 1350][2] (except _mail_ mode), [RFC 2347][3] (options), [RFC 2348][4] (blksize option), [RFC 2349][5] (timeout, tsize), and [RFC 7440][10] (windowsize) for RRQ. Additionally, it supports block number roll over, so files of any size can be transferred over.
+otftpd is an asynchronous [TFTP][1] server written in Python 3.5 compatible with the Oberon sources
 
-While a toy project, it does adhere to enough of the standards to be useful in real life.
-
-Some Py3k stuff it uses:
-- asyncio - [Transports and Protocols][6] for networking.
-- asyncio - [Tasks][7] for spinning up extra handlers.
-- [New unpacking methods][8] - some sweet stuff right there (3.5+)
-- [Tracebacks attached to exceptions][9] - woo!
-- Strings are now bytes because all text is unicode
-
+This project is a fork of  [https://github.com/sirMackk/py3tftp][2] version 1.2.1
 ### Installation
 
 ```
-pip install py3tftp
+git clone https://github.com/pedrudehuere/otftpd.git
+pip install otftpd
 ```
 
 ### Usage
@@ -27,61 +20,28 @@ TFTP has no security features, except for its simplicity:
 - Cannot write outside of the directory it's running from.
 
 ```
-usage: py3tftp [-h] [--host HOST] [-p PORT] [--ack-timeout ACK_TIMEOUT]
-                   [--timeout TIMEOUT] [-l FILE_LOG] [-v] [--version]
+usage: otftp [-h] [--host HOST] [-p PORT] [--ack-timeout ACK_TIMEOUT]
+             [--conn-timeout TIMEOUT] [-l FILE_LOG] [-v] [--version]
+             [--files-dir FILES_DIR]
 
 optional arguments:
   -h, --help            show this help message and exit
   --host HOST           IP of the interface the server will listen on.
                         Default: 0.0.0.0
-  -p PORT, --port PORT  Port the server will listen on. Default: 9069. TFTP
-                        standard-compliant port: 69 - requires superuser
-                        privileges.
+  -p PORT, --port PORT  Port the server will listen on. Default: 69 (TFTP
+                        standard port)
   --ack-timeout ACK_TIMEOUT
                         Timeout for each ACK of the lock-step. Default: 0.5.
-  --timeout TIMEOUT     Timeout before the server gives up on a transfer and
+  --conn-timeout TIMEOUT
+                        Timeout before the server gives up on a transfer and
                         closes the connection. Default: 3.
   -l FILE_LOG, --file-log FILE_LOG
                         Append output to log file.
   -v, --verbose         Enable debug-level logging.
   --version
+  --files-dir FILES_DIR
+                        Directory where files are read from
 ```
-
-#### Testing
-
-I wrote some simple acceptance tests in `tests/acceptance/*_test.py`. The code is messy as it's meant to be thrown away.
-
-```
-# runs the server with python -m py3tftp
-# runs unittests under tests/
-# kills the server
-./.travis/run.sh
-```
-
-#### Extending py3tftp
-
-The way that this module works is that there's a subclass of `BaseTFTPServerProtocol` scheduled on the IO loop that listens for incoming TFTP requests and decides what kind of `BaseTFTPProtocol` to schedule on the IO loop to handle the incoming request.
-
-The way this works in the default scenario is that `TFTPServerProtocol` listens to incoming requests. When a request comes in, it selects either the `WRQProtocol` or the `RRQProtocol` to create a task in the IO loop and passes the request to the selected protocol upon instantiation. From then on, the instantiated protocol handles all of the communication with the client and the _TFTPServerProtocol_ goes back to listening for requests.
-
-This amazing diagram illustrates the above process in the case of a RRQ request:
-
-![py3tftp rrq process diagram](tftp_graph.png)
-
-Extending py3tftp is as easy as:
-
-- Subclassing `BaseTFTPServerProtocol`, mainly to implement the `select_protocol` method to select your custom protocol.
-- Subclassing either `RRQProtocol` or `WRQProtocol` to implement your own logic (new options, file handling, etc.) for standard WRQ and RRQ requests, OR...
-- Subclassing `BaseTFTPProtocol` to implement your own logic for a custom type of request.
-
-#### Roadplan
-
-- ~~fix off-by-one blksize error ie. if you transfer a file 1000 bytes long and set blksize to 1000 bytes, the server won't ack it.~~
-- ~~Pull out file reader/writer from protocol classes~~.
-- ~~Add tsize from RFC 2349~~ (added by schrd).
-- Add ~~blksize~~, ~~timeout~~, and tsize tests.
-- Possibly implement RFCs 906 and 951 for fun!
-- Refactor the code, get rid of some duplication, optimize some low-hanging fruit.
 
 #### LICENSE
 
@@ -109,12 +69,4 @@ SOFTWARE.
 
 
 [1]: https://en.wikipedia.org/wiki/Trivial_File_Transfer_Protocol
-[2]: https://tools.ietf.org/html/rfc1350
-[3]: https://tools.ietf.org/html/rfc2347
-[4]: https://tools.ietf.org/html/rfc2348
-[5]: https://tools.ietf.org/html/rfc2349
-[6]: https://docs.python.org/3/library/asyncio-protocol.html
-[7]: https://docs.python.org/3/library/asyncio-task.html#task
-[8]: https://www.python.org/dev/peps/pep-0448/
-[9]: http://legacy.python.org/dev/peps/pep-3109/
-[10]: https://tools.ietf.org/html/rfc7440
+[2]: https://github.com/sirMackk/py3tftp

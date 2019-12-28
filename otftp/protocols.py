@@ -1,10 +1,10 @@
 import asyncio
 import logging
 
-from otftpd import file_io
-from otftpd import tftp_parsing
-from otftpd.exceptions import ProtocolException
-from otftpd.tftp_packet import TFTPPacketFactory
+from otftp import file_io
+from otftp import tftp_parsing
+from otftp.exceptions import ProtocolException
+from otftp.tftp_packet import TFTPPacketFactory
 
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 import logging
 
-from otftpd.exceptions import BadRequest, UnacknowledgedOption
+from otftp.exceptions import BadRequest, UnacknowledgedOption
 
 
 """

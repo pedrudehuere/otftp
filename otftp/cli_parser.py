@@ -2,11 +2,10 @@ import argparse
 import logging
 from sys import exit
 
-from otftpd import __version__
+from otftp import __version__
 
 EPILOG = """
 Released under the MIT license.
-Copyright 2016 Matt O. <matt@mattscodecave.com>
 """
 
 logging_config = {
@@ -30,11 +29,10 @@ def parse_cli_arguments():
     parser.add_argument(
         '-p',
         '--port',
-        default=9069,
+        default=69,
         type=int,
         help=('Port the server will listen on. '
-              'Default: 9069. TFTP standard-compliant port: 69 - '
-              'requires superuser privileges.'))
+              'Default: 69 (TFTP standard port)'))
     parser.add_argument(
         '--ack-timeout',
         default=0.5,
@@ -55,7 +53,7 @@ def parse_cli_arguments():
     parser.add_argument('--version', action='store_true')
 
     parser.add_argument('--files-dir',
-                        help='Directory where files are read/written')
+                        help='Directory where files are read from')
 
     args = parser.parse_args()
 
