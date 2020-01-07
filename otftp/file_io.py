@@ -73,7 +73,7 @@ class OberonFileReader(FileReader):
         self.log.setLevel(logging.INFO)
         self._files_dir = files_dir
         # we check if the files directory is under 'Oberon'
-        self._is_under_oberon_dir = self.TOP_DIR in self._files_dir.split(os.pathsep)
+        self._is_under_oberon_dir = self.TOP_DIR in self._files_dir.split(os.sep)
         super().__init__(*args, **kwargs)
         self._current_dir = self._files_dir
 
