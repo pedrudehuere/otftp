@@ -10,6 +10,14 @@ git clone https://github.com/pedrudehuere/otftp.git
 pip install otftp
 ```
 
+### Upgrade
+
+```
+cd otftp
+git pull
+pip install --update .
+```
+
 ### Usage
 
 otftp only sends files, it does not receive.
