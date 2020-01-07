@@ -1,4 +1,4 @@
-# Py3tftp
+# otftp
 
 otftpd is an asynchronous [TFTP][1] server written in Python 3.5 compatible with the Oberon sources
 
