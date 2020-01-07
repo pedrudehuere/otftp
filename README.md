@@ -12,17 +12,12 @@ pip install otftp
 
 ### Usage
 
-Invoking pyt3tftp will start a server that will interact with the current working directory - it will read and write files from it so don't run it in a place with sensitive files!
-
-TFTP has no security features, except for its simplicity:
-- It won't overwrite files.
-- Won't create non-existant directories.
-- Cannot write outside of the directory it's running from.
+otftp only sends files, it does not receive.
 
 ```
-usage: otftp [-h] [--host HOST] [-p PORT] [--ack-timeout ACK_TIMEOUT]
-             [--conn-timeout TIMEOUT] [-l FILE_LOG] [-v] [--version]
-             [--files-dir FILES_DIR]
+usage: otftp [-h] [--host HOST] [-p PORT] [--files-dir FILES_DIR]
+             [--ack-timeout ACK_TIMEOUT] [--conn-timeout TIMEOUT]
+             [-l FILE_LOG] [-v] [--version]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -30,6 +25,9 @@ optional arguments:
                         Default: 0.0.0.0
   -p PORT, --port PORT  Port the server will listen on. Default: 69 (TFTP
                         standard port)
+  --files-dir FILES_DIR
+                        Directory where files are read from. Default: current
+                        working directory
   --ack-timeout ACK_TIMEOUT
                         Timeout for each ACK of the lock-step. Default: 0.5.
   --conn-timeout TIMEOUT
@@ -39,8 +37,6 @@ optional arguments:
                         Append output to log file.
   -v, --verbose         Enable debug-level logging.
   --version
-  --files-dir FILES_DIR
-                        Directory where files are read from
 ```
 
 #### LICENSE

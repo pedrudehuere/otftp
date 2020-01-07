@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 from sys import exit
 
 from otftp import __version__
@@ -33,6 +34,9 @@ def parse_cli_arguments():
         type=int,
         help=('Port the server will listen on. '
               'Default: 69 (TFTP standard port)'))
+    parser.add_argument('--files-dir',
+                        help='Directory where files are read from.'
+                             ' Default: current working directory')
     parser.add_argument(
         '--ack-timeout',
         default=0.5,
@@ -52,9 +56,6 @@ def parse_cli_arguments():
                         help='Enable debug-level logging.')
     parser.add_argument('--version', action='store_true')
 
-    parser.add_argument('--files-dir',
-                        help='Directory where files are read from')
-
     args = parser.parse_args()
 
     if args.verbose:
@@ -67,5 +68,10 @@ def parse_cli_arguments():
         print_version()
         exit()
 
+    # files dir default is current directory
+    if not args.files_dir:
+        args.files_dir = os.getcwd()
+
     logging.basicConfig(**logging_config)
+
     return args
