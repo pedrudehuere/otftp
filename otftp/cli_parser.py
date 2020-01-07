@@ -11,7 +11,7 @@ Released under the MIT license.
 
 logging_config = {
     'format': '%(asctime)s [%(levelname)s] %(message)s',
-    'datefmt': '%Y-%m-%d',
+    'datefmt': '%Y-%m-%d_%H:%M:%S',
     'level': logging.INFO,
     'filename': None
 }
