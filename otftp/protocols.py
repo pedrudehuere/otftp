@@ -106,7 +106,10 @@ class BaseTFTPProtocol(asyncio.DatagramProtocol):
         """
         self.filename = self.packet.fname
         self.r_opts = self.packet.r_opts
-        self.opts = {**self.default_opts, **self.extra_opts, **self.r_opts}
+        self.opts = {}
+        self.opts.update(self.default_opts)
+        self.opts.update(self.extra_opts)
+        self.opts.update(self.r_opts)
         logger.debug(
             'Set protocol attributes as {attrs}'.format(attrs=self.opts))
 
