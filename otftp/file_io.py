@@ -65,7 +65,13 @@ class OberonFileReader(FileReader):
     A file reader which looks for files in the Oberon file hierarchy
     """
 
-    OBERON_LIBS_DIR = 'Oberon/Lib'
+    special_dirs = [
+        'Lib',
+        'System',
+        'Devices.Bin',
+        'Peripherals.Bin',
+    ]
+
     TOP_DIR = 'Oberon'
 
     def __init__(self, files_dir, *args, **kwargs):
@@ -83,7 +89,7 @@ class OberonFileReader(FileReader):
         if self._is_under_oberon_dir:
             return self._open_file_under_oberon_dir()
         else:
-            res =  open(self._current_file_path(), 'rb')
+            res = open(self._current_file_path(), 'rb')
             self.log.info('Transferring {}'.format(self._current_file_path()))
             return res
 
@@ -98,14 +104,15 @@ class OberonFileReader(FileReader):
                 self._go_to_parent_dir()
 
         # looking in special directories
-        self._current_dir = os.path.join(self._files_dir, self.OBERON_LIBS_DIR)
-        if self._file_exists_in_current_dir():
-            self.log.debug('looking for {} in {}'.format(self.fname, self._current_dir))
-            return open(self._current_file_path())
-        else:
-            self.log.debug('{} not found'.format(self._current_file_path()))
-            # file not found, we try to open it, which will raise a file not found error
-            open(os.path.join(self._files_dir, self.fname), 'rb')
+        base_dir = self._current_dir  # ugly
+        for special_dir in self.special_dirs:
+            self._current_dir = os.path.join(base_dir, special_dir)
+            if self._file_exists_in_current_dir():
+                self.log.debug('looking for {} in {}'.format(self.fname, self._current_dir))
+                return open(self._current_file_path(), 'rb')
+        self.log.debug('{} not found'.format(self._current_file_path()))
+        # file not found, we try to open it, which will raise a file not found error
+        open(os.path.join(self._files_dir, self.fname), 'rb')
 
     def _go_to_parent_dir(self):
         """ Goes up a directory """
